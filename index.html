@@ -262,10 +262,61 @@
         font-size: 0.9rem;
     }
 
+    /* MODAL */
+    .modal {
+        display: none;
+        position: fixed;
+        z-index: 2000;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0,0,0,0.9);
+        animation: fadeIn 0.3s;
+    }
+
+    @keyframes fadeIn {
+        from { opacity: 0; }
+        to { opacity: 1; }
+    }
+
+    .modal-content {
+        margin: auto;
+        display: block;
+        max-width: 90vw;
+        max-height: 90vh;
+        width: auto;
+        height: auto;
+        border-radius: 10px;
+        animation: zoomIn 0.3s;
+        box-shadow: 0 0 40px rgba(255,182,193,0.5);
+    }
+
+    @keyframes zoomIn {
+        from { transform: scale(0.5); opacity: 0; }
+        to { transform: scale(1); opacity: 1; }
+    }
+
+    .close {
+        position: absolute;
+        top: 20px;
+        right: 35px;
+        color: #f1f1f1;
+        font-size: 40px;
+        font-weight: bold;
+        cursor: pointer;
+        z-index: 2001;
+    }
+
+    .close:hover {
+        color: #ffb6c1;
+    }
+
     /* Smooth scroll */
     html {
         scroll-behavior: smooth;
     }
+
 </style>
 </head>
 
@@ -315,12 +366,48 @@
 <section id="gallery">
     <h2 class="section-title">Memories</h2>
     <div class="gallery">
-        <img src="https://images.unsplash.com/photo-1519681393784-d120267933ba">
-        <img src="https://images.unsplash.com/photo-1503454537195-1dcabb73ffb9">
-        <img src="https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e">
-        <img src="https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9">
+        <img src="./gallery/f3ab176c-0f92-4166-8249-bf53cf2e6d10 (1).jpg">
+        <img src="./gallery/f7a95e59-6917-4163-97bd-df4abf6e3b5d.jpg">
+        <img src="./gallery/fa0c1b5a-fe20-4f29-94e4-e49f7feada98.jpg">
+        <img src="./gallery/f1f2fdc9-cc88-4e34-90b5-fb7af361048c.jpg">
+
+        <!-- <img src="./gallery/pic1.jpg">
+        <img src="./gallery/pic2.jpg">
+        <img src="./gallery/pic3.jpg">
+        <img src="./gallery/pic4.jpg">
+        <img src="./gallery/pic5.jpg">
+        <img src="./gallery/pic6.jpg">
+        <img src="./gallery/08248713-8a3c-4a30-a0bc-5b0089df15c7.jpg">
+        <img src="./gallery/0d59b9e1-b073-499e-b4e1-626a3f97dec7.jpg">
+        <img src="./gallery/0f568920-6f51-4ce0-9d6b-e670e08bb865.jpg">
+        <img src="./gallery/38765343-9b5d-4401-93ec-cac2a6cc404e.jpg">
+        <img src="./gallery/3a269801-2e02-4217-a70e-e22bec02d305.jpg">
+        <img src="./gallery/5ece67e5-3573-4da9-a7f7-e0677b4bfc9e.jpg">
+        <img src="./gallery/69ad3107-f688-47f9-8d3a-606e27acf6a1.jpg">
+        <img src="./gallery/73908fe4-feb4-44f4-9103-6649478e63e8.jpg">
+        <img src="./gallery/8378b9b3-51fc-48b9-9440-9b95d5039ce3.jpg">
+        <img src="./gallery/93b2cae4-cb4c-445f-9c98-2da390a731a5.jpg">
+        <img src="./gallery/985fc4f6-742f-43f9-bf2a-efb18119b8c2.jpg">
+        <img src="./gallery/9fb6c87b-9025-4cca-b5d8-094e3e3cb8ff.jpg">
+        <img src="./gallery/a22ae5d0-22d7-46e5-aad6-d90e3a64226a.jpg">
+        <img src="./gallery/a265510f-b295-4706-bbd4-e083090583c9.jpg">
+        <img src="./gallery/b13ea8a2-78ff-4999-a8b5-445ec7b70fc3.jpg">
+        <img src="./gallery/b6a71e49-95c1-4dd4-94eb-eb42e719d6b0.jpg">
+        <img src="./gallery/c399cee6-9c30-48b6-b1ef-c4595393990e (1).jpg">
+        <img src="./gallery/cac75376-0f10-47be-9227-49cb6905f1eb.jpg">
+        <img src="./gallery/ec6f3e00-cff1-4290-ab10-e6ec29a911aa.jpg"> -->
+        
+    </div>
+
+
+    
+    <!-- Image Modal -->
+    <div id="imageModal" class="modal">
+        <span class="close">&times;</span>
+        <img class="modal-content" id="modalImg">
     </div>
 </section>
+
 
 <!-- MESSAGE -->
 <section id="message">
@@ -366,6 +453,44 @@ window.addEventListener('resize', () => {
     closeMenu();
   }
 });
+
+// Modal functionality
+const modal = document.getElementById('imageModal');
+const modalImg = document.getElementById('modalImg');
+const galleryImgs = document.querySelectorAll('#gallery img');
+const closeBtn = document.querySelector('.close');
+
+// Open modal
+galleryImgs.forEach(img => {
+  img.style.cursor = 'pointer';
+  img.onclick = function() {
+    modal.style.display = 'block';
+    modalImg.src = this.src;
+    document.body.style.overflow = 'hidden';
+  }
+});
+
+// Close modal
+closeBtn.onclick = function() {
+  modal.style.display = 'none';
+  document.body.style.overflow = 'auto';
+}
+
+modal.onclick = function(event) {
+  if (event.target === modal) {
+    modal.style.display = 'none';
+    document.body.style.overflow = 'auto';
+  }
+}
+
+// Close with ESC key
+document.addEventListener('keydown', function(event) {
+  if (event.key === 'Escape' && modal.style.display === 'block') {
+    modal.style.display = 'none';
+    document.body.style.overflow = 'auto';
+  }
+});
+
 </script>
 
 </body>

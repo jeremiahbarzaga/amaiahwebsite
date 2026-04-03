@@ -252,6 +252,62 @@
         border-radius: 10px;
         height: 150px;
         object-fit: cover;
+        cursor: pointer;
+        transition: transform 0.3s ease;
+    }
+
+    .gallery img:hover {
+        transform: scale(1.05);
+    }
+
+    /* Full gallery modal grid */
+    #fullGallery {
+        display: none;
+        grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+        gap: 8px;
+        max-width: 90vw;
+        max-height: 80vh;
+        overflow-y: auto;
+        padding: 20px;
+        background: rgba(255,255,255,0.95);
+        border-radius: 15px;
+        box-shadow: 0 0 50px rgba(255,182,193,0.5);
+    }
+
+    #fullGallery.show {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 12px;
+    }
+
+    #fullGallery img {
+        width: 100%;
+        height: 120px;
+        object-fit: cover;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+
+    #fullGallery img:hover {
+        transform: scale(1.1);
+        box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+    }
+
+    /* Modal header for full view */
+    .modal-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 20px;
+        background: rgba(255,182,193,0.2);
+        border-radius: 10px 10px 0 0;
+    }
+
+    .modal-title {
+        font-family: 'Playfair Display', serif;
+        font-size: 1.5rem;
+        color: white;
     }
 
     /* FOOTER */
@@ -264,6 +320,9 @@
 
     /* MODAL */
     .modal {
+        display: flex;              /* already applied when active */
+        align-items: center;        /* vertical center */
+        justify-content: center; 
         display: none;
         position: fixed;
         z-index: 2000;
@@ -369,8 +428,8 @@
         <img src="./gallery/f3ab176c-0f92-4166-8249-bf53cf2e6d10 (1).jpg">
         <img src="./gallery/f7a95e59-6917-4163-97bd-df4abf6e3b5d.jpg">
         <img src="./gallery/fa0c1b5a-fe20-4f29-94e4-e49f7feada98.jpg">
-        <img src="./gallery/f1f2fdc9-cc88-4e34-90b5-fb7af361048c.jpg">
-
+        <!-- <img src="./gallery/f1f2fdc9-cc88-4e34-90b5-fb7af361048c.jpg"> -->
+        <img src="./gallery/69ad3107-f688-47f9-8d3a-606e27acf6a1.jpg">
         <!-- <img src="./gallery/pic1.jpg">
         <img src="./gallery/pic2.jpg">
         <img src="./gallery/pic3.jpg">
@@ -401,10 +460,14 @@
 
 
     
-    <!-- Image Modal -->
+    <!-- Full Gallery Modal -->
     <div id="imageModal" class="modal">
-        <span class="close">&times;</span>
-        <img class="modal-content" id="modalImg">
+        <span class="close" id="closeModal">&times;</span>
+        <div class="modal-header">
+            <h3 class="modal-title">All Memories Gallery</h3>
+        </div>
+        <div id="fullGallery"></div>
+        <img class="modal-content" id="modalImg" style="display: none;">
     </div>
 </section>
 
@@ -483,13 +546,94 @@ modal.onclick = function(event) {
   }
 }
 
+// Gallery images array - all 26 from gallery/
+const galleryImages = [
+  '0d59b9e1-b073-499e-b4e1-626a3f97dec7.jpg',
+  '0f568920-6f51-4ce0-9d6b-e670e08bb865.jpg',
+  '3a269801-2e02-4217-a70e-e22bec02d305.jpg',
+  '5ece67e5-3573-4da9-a7f7-e0677b4bfc9e.jpg',
+  '9fb6c87b-9025-4cca-b5d8-094e3e3cb8ff.jpg',
+  '69ad3107-f688-47f9-8d3a-606e27acf6a1.jpg',
+  '93b2cae4-cb4c-445f-9c98-2da390a731a5.jpg',
+  '985fc4f6-742f-43f9-bf2a-efb18119b8c2.jpg',
+  '8378b9b3-51fc-48b9-9440-9b95d5039ce3.jpg',
+  '73908fe4-feb4-44f4-9103-6649478e63e8.jpg',
+  '08248713-8a3c-4a30-a0bc-5b0089df15c7.jpg',
+  '38765343-9b5d-4401-93ec-cac2a6cc404e.jpg',
+  'a22ae5d0-22d7-46e5-aad6-d90e3a64226a.jpg',
+  'a265510f-b295-4706-bbd4-e083090583c9.jpg',
+  'b6a71e49-95c1-4dd4-94eb-eb42e719d6b0.jpg',
+  'b13ea8a2-78ff-4999-a8b5-445ec7b70fc3.jpg',
+  'c399cee6-9c30-48b6-b1ef-c4595393990e (1).jpg',
+  'cac75376-0f10-47be-9227-49cb6905f1eb.jpg',
+  'ec6f3e00-cff1-4290-ab10-e6ec29a911aa.jpg',
+  'f1f2fdc9-cc88-4e34-90b5-fb7af361048c.jpg',
+  'f3ab176c-0f92-4166-8249-bf53cf2e6d10 (1).jpg',
+  'f7a95e59-6917-4163-97bd-df4abf6e3b5d.jpg',
+  'fa0c1b5a-fe20-4f29-94e4-e49f7feada98.jpg',
+  'pic1.jpg',
+  'pic2.jpg',
+  'pic3.jpg',
+  'pic4.jpg',
+  'pic5.jpg',
+  'pic6.jpg'
+];
+
+function loadFullGallery() {
+  const fullGallery = document.getElementById('fullGallery');
+  fullGallery.innerHTML = ''; // Clear previous
+  fullGallery.classList.add('show');
+  
+  galleryImages.forEach(filename => {
+    const img = document.createElement('img');
+    img.src = `./gallery/${filename}`;
+    img.alt = filename;
+    img.onclick = function() {
+      // Optional: enlarge this image - keep simple for now
+      console.log('Clicked full gallery image:', filename);
+    };
+    fullGallery.appendChild(img);
+  });
+}
+
+// Updated modal elements
+const fullGalleryEl = document.getElementById('fullGallery');
+const closeModalBtn = document.getElementById('closeModal');
+
+// Open full gallery modal
+galleryImgs.forEach(img => {
+  img.onclick = function() {
+    modal.style.display = 'block';
+    document.body.style.overflow = 'hidden';
+    loadFullGallery();
+  }
+});
+
+// Close modal
+closeModalBtn.onclick = function() {
+  modal.style.display = 'none';
+  fullGalleryEl.classList.remove('show');
+  document.body.style.overflow = 'auto';
+}
+
+modal.onclick = function(event) {
+  if (event.target === modal) {
+    modal.style.display = 'none';
+    fullGalleryEl.classList.remove('show');
+    document.body.style.overflow = 'auto';
+  }
+}
+
 // Close with ESC key
 document.addEventListener('keydown', function(event) {
   if (event.key === 'Escape' && modal.style.display === 'block') {
     modal.style.display = 'none';
+    fullGalleryEl.classList.remove('show');
     document.body.style.overflow = 'auto';
   }
 });
+
+
 
 </script>
 

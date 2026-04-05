@@ -3,8 +3,13 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Baby Invitation</title>
-
+<title>Amaiah`s Christening</title>
+<link rel="icon" type="image/png" href="./amaiahIcon.png">
+<meta property="og:title" content="Amaiah Elizabeth's 1st Birthday 🎀">
+<meta property="og:description" content="Join us to celebrate a very special day 💖">
+<meta property="og:image" content="https://jeremiahbarzaga.github.io/amaiahwebsite/amaiahIcon.png">
+<meta property="og:url" content="https://jeremiahbarzaga.github.io/amaiahwebsite/">
+<meta property="og:type" content="website">
 <!-- Google Fonts -->
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
 
@@ -469,6 +474,11 @@
         <div id="fullGallery"></div>
         <img class="modal-content" id="modalImg" style="display: none;">
     </div>
+
+    <div id="imageModal1" class="modal">
+    <span class="close" id="closeModal1">&times;</span>
+    <img class="modal-content" id="modalImg1">
+</div>
 </section>
 
 
@@ -581,17 +591,22 @@ const galleryImages = [
 
 function loadFullGallery() {
   const fullGallery = document.getElementById('fullGallery');
-  fullGallery.innerHTML = ''; // Clear previous
+  const modal = document.getElementById('imageModal1');
+  const modalImg = document.getElementById('modalImg1');
+
+  fullGallery.innerHTML = '';
   fullGallery.classList.add('show');
   
   galleryImages.forEach(filename => {
     const img = document.createElement('img');
     img.src = `./gallery/${filename}`;
     img.alt = filename;
+
     img.onclick = function() {
-      // Optional: enlarge this image - keep simple for now
-      console.log('Clicked full gallery image:', filename);
+      modal.style.display = "block";     // show modal
+      modalImg.src = this.src;           // set clicked image
     };
+
     fullGallery.appendChild(img);
   });
 }
@@ -599,7 +614,7 @@ function loadFullGallery() {
 // Updated modal elements
 const fullGalleryEl = document.getElementById('fullGallery');
 const closeModalBtn = document.getElementById('closeModal');
-
+const closeModalBtn1 = document.getElementById('closeModal1');
 // Open full gallery modal
 galleryImgs.forEach(img => {
   img.onclick = function() {
@@ -615,7 +630,11 @@ closeModalBtn.onclick = function() {
   fullGalleryEl.classList.remove('show');
   document.body.style.overflow = 'auto';
 }
+  const modal1 = document.getElementById('imageModal1');
+closeModalBtn1.onclick = function() {
+  modal1.style.display = 'none';
 
+}
 modal.onclick = function(event) {
   if (event.target === modal) {
     modal.style.display = 'none';
